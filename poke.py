@@ -22,12 +22,14 @@ while 1:
   recv_time = proc[0].split()[0]
   interestURL = proc[0].split()[5]
   interestFilename = interestURL.split('/')[2]
-  print "Interest URL", interestURL
-  print "Interest Filename", interestFilename
+  #print "Interest URL", interestURL
+  #print "Interest Filename", interestFilename
   #print recv_time
   #print time.time()
 
   if (time.time()-float(recv_time) < 30):
+    print "\nActive request: " + interestFilename
+
     if interestFilename in responseList:
       print "Already responded."
       continue
@@ -36,7 +38,7 @@ while 1:
     subprocess.call("ccngetfile -v ccnx:/rsrepo/" + interestFilename \
                     + " /tmp/" + interestFilename,shell=True)
 
-    print "\nAnalyzing available resources...\n"
+    print "\nAnalyzing available resources..."
     # Need to check OpenStack's plugin to decide
     f = open('/home/htor/Documents/fireant/rsStatus','r')
     isAvailable = int(f.readline().strip())
@@ -48,15 +50,15 @@ while 1:
       print "No available resources found!!!"
 
     if isResponse == True:
-      print "Create resource spec json...\n"
+      print "Create resource spec json..."
       resFilename = 'res_' + str(blockID) + '_' + interestFilename
       subprocess.call("ccnputfile -v ccnx:/rsrepo/" + resFilename + \
                       " ~/Documents/fireant/rsresponse.json",shell=True)
-      print "Responding the interest...\n"
+      print "\nResponding the interest..."
       subprocess.call("echo '" + resFilename + "' | ccnpoke -v " + interestURL,shell=True)
 
       responseList.append(interestFilename)
-      print responseList
+      #print responseList
 
   else:
-    print "No active interest"
+    print str(time.time()) + ": No active interest"
