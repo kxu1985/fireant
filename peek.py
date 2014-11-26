@@ -50,4 +50,4 @@ if proc[0] != '':
   print responsefile
   subprocess.call("ccngetfile -v ccnx:/rsrepo/" + responsefile + " /tmp/" + responsefile, \
                   shell=True) 
-  print '\nGOT AVAILABLE RESOUCES!!!'
+  print '\nGOT RESOURCES!!!'
