@@ -14,6 +14,7 @@ f.close()
 # Called by Plugin
 # Input file: rsreq.json
 #=========================
+print '\nReceived a request...'
 reqfilename = 'req_' + str(blockID) + '_' + str(time.time()) + '.json'
 subprocess.call("ccnputfile -v ccnx:/rsrepo/" + reqfilename + \
                 " ~/Documents/fireant/rsreq.json",shell=True)
@@ -24,12 +25,15 @@ subprocess.call("ccnputfile -v ccnx:/rsrepo/" + reqfilename + \
 lifetime = 10
 waittime = lifetime
 reqURL = 'ccnx:/fireant/' + reqfilename
+print '\nSend out the request...'
 proc = subprocess.Popen(['ccnpeek','-v','-l',str(lifetime),'-w',str(waittime),reqURL], \
                         stdout=subprocess.PIPE).communicate()
 if proc[0] != '':
+  print '\nGot a response...'
   #-------------------------------
   # Analyze the returned response
   #-------------------------------
+  print 'Analyzing the response...'
   f = open('/tmp/recv_bin', 'w')
   f.write(proc[0])
   f.close()
@@ -46,3 +50,4 @@ if proc[0] != '':
   print responsefile
   subprocess.call("ccngetfile -v ccnx:/rsrepo/" + responsefile + " /tmp/" + responsefile, \
                   shell=True) 
+  print '\nGOT AVAILABLE RESOUCES!!!'
