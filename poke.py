@@ -3,7 +3,10 @@ import sys
 import subprocess
 import time
 
-blockID = 2
+f = open('/home/htor/Documents/fireant/blockID','r')
+blockID = f.readline().strip()
+f.close()
+
 responseList = []
 
 while 1:
@@ -35,7 +38,14 @@ while 1:
 
     print "\nAnalyzing available resources...\n"
     # Need to check OpenStack's plugin to decide
-    isResponse = True
+    f = open('/home/htor/Documents/fireant/rsStatus','r')
+    isAvailable = int(f.readline().strip())
+    if isAvailable == 1:
+      isResponse = True
+      print "Resources is available!!!"
+    else:
+      isResponse = False
+      print "No available resources found!!!"
 
     if isResponse == True:
       print "Create resource spec json...\n"
