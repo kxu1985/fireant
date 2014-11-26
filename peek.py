@@ -6,8 +6,9 @@ import pickle
 from xml.etree import ElementTree
 import base64
 
-
-blockID = 1
+f = open('/home/htor/Documents/fireant/blockID','r')
+blockID = f.readline().strip()
+f.close()
 
 #=========================
 # Called by Plugin
