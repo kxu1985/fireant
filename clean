@@ -1,0 +1,6 @@
+ccnrm ccnx:/rsrepo
+ccndstop
+cd ~/rsrepo
+rm -rf *
+cd /tmp/
+rm ccnd.log *.json
