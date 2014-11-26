@@ -19,6 +19,10 @@ while 1:
   proc = subprocess.Popen(['tail','-n','1','/tmp/fireant.interest'], \
                           stdout=subprocess.PIPE).communicate()
   #print proc[0]
+  if proc[0] == '':
+    print str(time.time()) + ': No fireant message.'
+    continue
+
   recv_time = proc[0].split()[0]
   interestURL = proc[0].split()[5]
   interestFilename = interestURL.split('/')[2]
