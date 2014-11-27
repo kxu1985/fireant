@@ -59,7 +59,8 @@ while 1:
       subprocess.call("ccnputfile -v ccnx:/rsrepo/" + resFilename + \
                       " ~/Documents/fireant/rsresponse.json",shell=True)
       print "\nResponding the interest..."
-      subprocess.call("timeout 2 echo '" + resFilename + "' | ccnpoke -v " + interestURL,shell=True)
+      subprocess.call("echo '" + resFilename + "' | ccnpoke -v " + interestURL \
+                      + " ; sleep 2; kill $!",shell=True)
 
       responseList.append(interestFilename)
       #print responseList
