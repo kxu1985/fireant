@@ -1,3 +1,4 @@
 ccndstart
 ccnr &
 ccndc add ccnx:/ udp 172.16.10.67
+ccndc add ccnx:/ udp 172.16.10.65
