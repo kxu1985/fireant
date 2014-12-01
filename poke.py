@@ -1,7 +1,5 @@
 #!/usr/bin/env python
-import sys
-import subprocess
-import time
+import sys, subprocess, time, os, datetime, signal
 
 f = open('/home/htor/Documents/fireant/blockID','r')
 blockID = f.readline().strip()
@@ -59,8 +57,29 @@ while 1:
       subprocess.call("ccnputfile -v ccnx:/rsrepo/" + resFilename + \
                       " ~/Documents/fireant/rsresponse.json",shell=True)
       print "\nResponding the interest..."
-      subprocess.call("echo '" + resFilename + "' | ccnpoke -v " + interestURL \
-                      + " ; sleep 2; kill $!",shell=True)
+      #subprocess.call("echo '" + resFilename + "' | ccnpoke -v " + interestURL \
+      #                + " ; sleep 2; kill $!",shell=True)
+      subprocess.call("echo '" + resFilename + "' | ccnpoke -v " + interestURL + " &",\
+                      shell=True)
+      subprocess.call("sleep 2; killall ccnpoke",shell=True)
+      
+      '''
+      cmd = "echo '" + resFilename + "' | ccnpoke -v " + interestURL + ";"
+      print cmd
+      cmd = cmd.split(" ")
+      print cmd
+      start = datetime.datetime.now()
+      process = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()
+      
+      timeout = 2;
+      while process.poll() is None:
+        print process.poll()
+        time.sleep(1)
+        now = datetime.datetime.now()
+        if (now - start).seconds > timeout:
+          os.kill(process.pid, signal.SIGKILL)
+          os.waitpid(-1, os.WNOHANG)
+      '''
 
       responseList.append(interestFilename)
       #print responseList
