@@ -1,0 +1,2 @@
+ccnputfile -v ccnx:/rsrepo/webserver.bin ~/Documents/fireant/webserver.bin
+ccnputfile -v ccnx:/rsrepo/dbserver.bin ~/Documents/fireant/dbserver.bin
