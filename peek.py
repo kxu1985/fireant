@@ -14,15 +14,19 @@ f.close()
 # Called by Plugin
 # Input file: rsreq.json
 #=========================
-print '\nReceived a request...'
-reqfilename = 'req_' + str(blockID) + '_' + str(time.time()) + '.json'
+print '\nProcessing a request...'
+out,err = subprocess.Popen("md5sum ~/Documents/fireant/rsreq.json",\
+                            stdout=subprocess.PIPE,shell=True).communicate()
+print out
+reqfilename = 'req_profile_' + out.split()[0].strip() + '.json'
+print reqfilename
 subprocess.call("ccnputfile -v ccnx:/rsrepo/" + reqfilename + \
                 " ~/Documents/fireant/rsreq.json",shell=True)
 
 #===========================
 # send out resource request
 #===========================
-lifetime = 10
+lifetime = 20
 waittime = lifetime
 reqURL = 'ccnx:/fireant/' + reqfilename
 print '\nSend out the request...'
@@ -49,5 +53,6 @@ if proc[0] != '':
   responsefile = base64.b64decode(xmlcontent.text).strip()
   print responsefile
   subprocess.call("ccngetfile -v ccnx:/rsrepo/" + responsefile + " /tmp/" + responsefile, \
-                  shell=True) 
+                  shell=True)
+  subprocess.call("cat /tmp/" + responsefile, shell=True)
   print '\nGOT RESOURCES!!!'

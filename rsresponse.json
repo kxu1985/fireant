@@ -1,7 +1,7 @@
 {
   "response":{
     "vm":2,
-    "link":1
+    "worknode":1
     "vxlan":100
   }
 }

@@ -1,5 +1,6 @@
 #!/usr/bin/env python
-import sys, subprocess, time, os, datetime, signal
+import sys, subprocess, time, os, datetime, signal, json
+from pprint import pprint
 
 f = open('/home/htor/Documents/fireant/blockID','r')
 blockID = f.readline().strip()
@@ -42,6 +43,22 @@ while 1:
 
     print "\nAnalyzing available resources..."
     # Need to check OpenStack's plugin to decide
+    
+    req_json = open('/tmp/'+interestFilename)
+    req_data = json.load(req_json)
+    pprint(req_data)
+    req_json.close()
+    servicebin = str(req_data['request']['service']) + ".bin"
+
+    if os.path.isfile('/home/htor/rsrepo/bin/'+servicebin):
+      print "The binary " + servicebin + " already exists!"
+    else:
+      print "The binary " + servicebin + " does not exist! Need to get this bin!"
+      subprocess.call("ccngetfile -v ccnx:/rsrepo/" + servicebin \
+                      + " /home/htor/rsrepo/bin/" + servicebin,shell=True)
+
+    print "Got the binary " + servicebin + "... Checking resource..."
+
     f = open('/home/htor/Documents/fireant/rsStatus','r')
     isAvailable = int(f.readline().strip())
     if isAvailable == 1:
@@ -50,6 +67,7 @@ while 1:
     else:
       isResponse = False
       print "No available resources found!!!"
+
 
     if isResponse == True:
       print "Create resource spec json..."
@@ -63,24 +81,6 @@ while 1:
                       shell=True)
       subprocess.call("sleep 2; killall ccnpoke",shell=True)
       
-      '''
-      cmd = "echo '" + resFilename + "' | ccnpoke -v " + interestURL + ";"
-      print cmd
-      cmd = cmd.split(" ")
-      print cmd
-      start = datetime.datetime.now()
-      process = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()
-      
-      timeout = 2;
-      while process.poll() is None:
-        print process.poll()
-        time.sleep(1)
-        now = datetime.datetime.now()
-        if (now - start).seconds > timeout:
-          os.kill(process.pid, signal.SIGKILL)
-          os.waitpid(-1, os.WNOHANG)
-      '''
-
       responseList.append(interestFilename)
       #print responseList
 
