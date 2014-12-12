@@ -56,3 +56,12 @@ if proc[0] != '':
                   shell=True)
   subprocess.call("cat /tmp/" + responsefile, shell=True)
   print '\nGOT RESOURCES!!!'
+
+  print "Configuring vxlan tunnel..."
+  cmd = "/home/htor/Documents/fireant/tunnel"
+  subprocess.call(cmd,shell=True)
+
+  print "Adding flows..."
+  cmd = "/home/htor/Documents/fireant/addflows"
+  subprocess.call(cmd,shell=True)
+

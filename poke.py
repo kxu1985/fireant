@@ -71,17 +71,18 @@ while 1:
 
     if isResponse == True:
       print "Launching vms..."
-      cmd = "sudo ~/Documents/fireant/vxlan.py &"
-      subprocess.call(cmd,shell=True)
-      '''
+      cmd = "nohup sudo /home/htor/Documents/fireant/vxlan_recv.py &"
+      subprocess.Popen(cmd,shell=True)
+      time.sleep(1)     
+      
       print "Configuring vxlan tunnel..."
-      cmd = "~/Documents/fireant/tunnel"
+      cmd = "~/Documents/fireant/tunnel_recv"
       subprocess.call(cmd,shell=True)
-
+      
       print "Configuring flows..."
       cmd = "~/Documents/fireant/addflows"
       subprocess.call(cmd,shell=True)
-      '''
+      
       print "Create resource spec json..."
       resFilename = 'res_' + str(blockID) + '_' + interestFilename
       subprocess.call("ccnputfile -v ccnx:/rsrepo/" + resFilename + \
