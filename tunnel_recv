@@ -1,0 +1,1 @@
+echo ctopassword | sudo -S ovs-vsctl add-port s1 vtep -- set interface vtep type=vxlan option:remote_ip=172.16.10.66 option:key=flow ofport_request=10
