@@ -1,0 +1,1 @@
+echo ctopassword | sudo -S ovs-ofctl add-flows s1 flows.txt
