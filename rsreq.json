@@ -1,7 +1,12 @@
 {
   "request":{
     "ID":"1002",
-    "vm":2,
-    "service":"dbserver"
+    "vm_num":1,
+    "vm_alias":"db_alice",
+    "vm_ip":"10.0.0.2",
+    "vm_mac":"00:00:00:00:00:02",
+    "host_ip":"172.16.10.66",
+    "service":"dbserver",
+    "bin_name":"dbserver.bin"
   }
 }

@@ -1,7 +1,9 @@
 {
   "response":{
-    "vm":2,
-    "worknode":1
-    "vxlan":100
+    "blockID":1,
+    "vm_reserved":1,
+    "worknodeID":1,
+    "vxlan":100,
+    "host_ip":"172.16.10.67"
   }
 }

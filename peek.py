@@ -1,10 +1,7 @@
 #!/usr/bin/env python
-import sys
-import subprocess
-import time
-import pickle
+import sys,subprocess,time,pickle,os,json,base64
 from xml.etree import ElementTree
-import base64
+from pprint import pprint
 
 f = open('/home/htor/Documents/fireant/blockID','r')
 blockID = f.readline().strip()
@@ -51,17 +48,28 @@ if proc[0] != '':
   print xmlcontent.text
   #print xmlcontent.tail
   responsefile = base64.b64decode(xmlcontent.text).strip()
-  print responsefile
-  subprocess.call("ccngetfile -v ccnx:/rsrepo/" + responsefile + " /tmp/" + responsefile, \
-                  shell=True)
-  subprocess.call("cat /tmp/" + responsefile, shell=True)
+  #print responsefile
+  f = open('/tmp/rsresponse.json','w')
+  f.write(responsefile)
+  f.close()
+  os.system('cat /tmp/rsresponse.json')
+  #subprocess.call("ccngetfile -v ccnx:/rsrepo/" + responsefile + " /tmp/" + responsefile, \
+  #                shell=True)
+  #subprocess.call("cat /tmp/" + responsefile, shell=True)
   print '\nGOT RESOURCES!!!'
 
+  res_json = open('/tmp/rsresponse.json')
+  res_data = json.load(res_json)
+  pprint(res_data)
+  res_json.close()
+  
   print "Configuring vxlan tunnel..."
-  cmd = "/home/htor/Documents/fireant/tunnel"
+  cmd = "/home/htor/Documents/fireant/tunnel_recv.py " + \
+        res_data['response']['host_ip']
   subprocess.call(cmd,shell=True)
 
   print "Adding flows..."
-  cmd = "/home/htor/Documents/fireant/addflows"
+  cmd = "/home/htor/Documents/fireant/addflows_sender.py " + \
+        str(res_data['response']['vxlan'])
   subprocess.call(cmd,shell=True)
 
