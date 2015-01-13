@@ -48,17 +48,6 @@ while 1:
     req_data = json.load(req_json)
     pprint(req_data)
     req_json.close()
-    servicebin = str(req_data['request']['bin_name'])
-
-    if os.path.isfile('/home/htor/rsrepo/bin/'+servicebin):
-      print "The binary " + servicebin + " already exists!"
-    else:
-      print "The binary " + servicebin + " does not exist! \
-            Need to get this bin!"
-      subprocess.call("ccngetfile -v ccnx:/rsrepo/" + servicebin \
-                      + " /home/htor/rsrepo/bin/" + servicebin,shell=True)
-
-    print "Got the binary " + servicebin + "... Checking resource..."
 
     f = open('/home/htor/Documents/fireant/rsStatus','r')
     isAvailable = int(f.readline().strip())
@@ -71,6 +60,17 @@ while 1:
 
 
     if isResponse == True:
+      servicebin = str(req_data['request']['bin_name'])
+
+      if os.path.isfile('/home/htor/rsrepo/bin/'+servicebin):
+        print "The binary " + servicebin + " already exists!"
+      else:
+        print "The binary " + servicebin + " does not exist! \
+              Need to get this bin!"
+        subprocess.call("ccngetfile -v ccnx:/rsrepo/" + servicebin \
+                        + " /home/htor/rsrepo/bin/" + servicebin,shell=True)
+      print "Got the binary " + servicebin + "... Checking resource..."
+
       print "Launching vms..."
       cmd = "nohup sudo /home/htor/Documents/fireant/vxlan_recv.py "+\
             req_data['request']['vm_alias'] + " " +\
@@ -91,13 +91,24 @@ while 1:
       subprocess.call(cmd,shell=True)
       
       print "Create resource spec json..."
-      #resFilename = 'res_' + str(blockID) + '_' + interestFilename
-      #subprocess.call("ccnputfile -v ccnx:/rsrepo/" + resFilename + \
-      #                " ~/Documents/fireant/rsresponse.json",shell=True)
+      res_json = open('./rsresponse.json')
+      res_data = json.load(res_json)
+      #pprint(res_data)
+      res_json.close()
+      res_data['response']['ID'] = req_data['request']['ID']
+      # hardcode, later we need to add more code here
+      if res_data['response']['ID'] == 'red':
+        res_data['response']['vxlan'] = 100
+      else:
+        res_data['response']['vxlan'] = 200
+      res_json = open('./rsresponse_mod.json','w')
+      print >> res_json, json.dumps(res_data,indent=2)
+      res_json.close()
+
       print "\nResponding the interest..."
       #subprocess.call("echo '" + resFilename + "' | ccnpoke -v " + interestURL + " &",\
       #                shell=True)
-      cmd = "cat rsresponse.json | ccnpoke -v " + interestURL + " &"
+      cmd = "cat rsresponse_mod.json | ccnpoke -v " + interestURL + " &"
       os.system(cmd)
       subprocess.call("sleep 2; killall ccnpoke",shell=True)
       
