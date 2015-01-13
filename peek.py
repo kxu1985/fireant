@@ -20,6 +20,26 @@ print reqfilename
 subprocess.call("ccnputfile -v ccnx:/rsrepo/" + reqfilename + \
                 " ~/Documents/fireant/rsreq.json",shell=True)
 
+#=================
+# Maintain request
+#=================
+pending_request = {}
+res_json = open('./rsreq.json')
+res_data = json.load(res_json)
+print "\nRequest JSON File:"
+pprint(res_data)
+hostname = res_data['request']['ID']
+# hardcode. Later we need to query mininet to get the info
+if hostname == 'red':
+  in_port = 1
+else:
+  in_port = 2
+pending_request[hostname] = {'mac':'00:00:00:00:00:01', \
+                              'ip':'10.0.0.1', 'in_port':in_port}
+print "\nAdd pending request:"
+print json.dumps(pending_request, indent=2)
+res_json.close()
+
 #===========================
 # send out resource request
 #===========================
